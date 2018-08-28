@@ -48,10 +48,10 @@ def file2matrix(fileName):
 
 
 
-mat, lab = file2matrix('datingTestSet.txt')
-
-print mat
-print lab[0:20]
+# mat, lab = file2matrix('datingTestSet.txt')
+#
+# print mat
+# print lab[0:20]
 
 
 
@@ -70,4 +70,20 @@ def autoNorm(dataSet):
     normalDataSet = dataSet - tile(minVals, (m, 1))
     normalDataSet = normalDataSet / tile(ranges, (m, 1))
     return normalDataSet, ranges, minVals
+
+def datingClassTest():
+    hoRatio = 0.10
+    datingDataMat, datingLabels = file2matrix('datingTestSet.txt')
+    normMat, ranges, minVals = autoNorm(datingDataMat)
+    m = normMat.shape[0]
+    numTestVecs = int(m * hoRatio)
+    errorCount = 0.0
+    for i in range(numTestVecs):
+        classsfierRes = classfy0(normMat[i, :], normMat[numTestVecs:m, :], datingLabels[numTestVecs:m], 3)
+        print "predict = %d, real = %d" % (classsfierRes, datingLabels[i])
+        if (classsfierRes != datingLabels[i]): errorCount += 1
+    print "total rate = %f" % (errorCount / float(numTestVecs))
+
+
+datingClassTest()
 
