@@ -55,7 +55,19 @@ print lab[0:20]
 
 
 
-fig = plt.figure()
-ax = fig.add_subplot(111)
-ax.scatter(mat[:, 0], mat[:, 1], 15.0*array(lab), 15.0*array(lab))
-plt.show()
+# fig = plt.figure()
+# ax = fig.add_subplot(111)
+# ax.scatter(mat[:, 0], mat[:, 1], 15.0*array(lab), 15.0*array(lab))
+# plt.show()
+
+
+def autoNorm(dataSet):
+    minVals = dataSet.min(0)
+    maxVals = dataSet.max(0)
+    ranges = maxVals - minVals
+    normalDataSet = zeros(shape(dataSet))
+    m = dataSet.shape[0]
+    normalDataSet = dataSet - tile(minVals, (m, 1))
+    normalDataSet = normalDataSet / tile(ranges, (m, 1))
+    return normalDataSet, ranges, minVals
+
