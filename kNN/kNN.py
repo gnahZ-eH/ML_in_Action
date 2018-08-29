@@ -1,4 +1,5 @@
 from numpy import *
+from os import listdir
 import operator
 import matplotlib
 import matplotlib.pyplot as plt
@@ -85,5 +86,48 @@ def datingClassTest():
     print "total rate = %f" % (errorCount / float(numTestVecs))
 
 
-datingClassTest()
+# datingClassTest()
 
+def img2Vector(fileName):
+    returnVect = zeros((1, 1024))
+    fr = open(fileName)
+    for i in range(32):
+        lineStr = fr.readline()
+        for j in range(32):
+            returnVect[0, 32 * i + j] = int(lineStr[j])
+    return returnVect
+
+# testVector = img2Vector('testDigits/0_13.txt')
+
+# print testVector[0, 0:2]
+
+def handWritingClassTest():
+    hwLabels = []
+    trainingFileList = listdir('trainingDigits')
+    m = len(trainingFileList)
+    trainingMat = zeros((m, 1024))
+
+    for i in range(m):
+        fileNameStr = trainingFileList[i]
+        fileStr = fileNameStr.split('.')[0]
+        classNumStr = int(fileStr.split('_')[0])
+        hwLabels.append(classNumStr)
+        trainingMat[i, :] = img2Vector('trainingDigits/%s' % fileNameStr)
+    testFileList = listdir('testDigits')
+
+    errorCount = 0.0
+    mTest = len(testFileList)
+    for i in range(mTest):
+        fileNameStr = testFileList[i]
+        fileStr = fileNameStr.split('.')[0]
+        classNumStr = int(fileStr.split('_')[0])
+        vectorUnderTest = img2Vector('testDigits/%s' % fileNameStr)
+        classifierRes = classfy0(vectorUnderTest, trainingMat, hwLabels, 3)
+        print "predict %d, real = %d" % (classifierRes, classNumStr)
+        if (classifierRes != classNumStr): errorCount += 1.0
+
+    print "total error = %d" % errorCount
+    print "error rate = %f" % (errorCount / float(mTest))
+
+
+handWritingClassTest()
